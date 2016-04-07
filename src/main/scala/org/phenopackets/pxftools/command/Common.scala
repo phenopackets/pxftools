@@ -62,6 +62,16 @@ trait Common extends Command {
     }
   }
 
+  def readPhenoPacketFile(file: File): PhenoPacket = {
+    try {
+      JsonReader.readFile(file)
+    } catch {
+      case ioe: IOException => {
+        YamlReader.readFile(file)
+      }
+    }
+  }
+
   def writePhenoPacket(packet: PhenoPacket, outputStream: OutputStream, writer: PhenoPacketWriter): Unit = {
     val streamWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "utf-8"))
     streamWriter.write(writer(packet))
