@@ -33,7 +33,7 @@ object MergeUtil {
       case (aList: ArrayNode, bList: ArrayNode) => {
         val (aHaveID, aNoID) = aList.elements.asScala.partition(_.has("id"))
         val (bHaveID, bNoID) = bList.elements.asScala.partition(_.has("id"))
-        val mergedWithSameID = (aHaveID ++ bHaveID).map(obj => Map(obj.get("id").asText -> obj)).reduce(_ |+| _)
+        val mergedWithSameID = (aHaveID ++ bHaveID).map(obj => Map(obj.get("id").asText -> obj)).fold(Map.empty)(_ |+| _)
         val unionArray = JsonNodeFactory.instance.arrayNode()
         unionArray.addAll(aNoID.toSeq.asJava)
         unionArray.addAll(bNoID.toSeq.asJava)
