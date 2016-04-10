@@ -24,6 +24,7 @@ libraryDependencies ++= {
     "org.backuity.clist"          %% "clist-core"            % "2.0.2",
     "org.backuity.clist"          %% "clist-macros"          % "2.0.2" % "provided",
     "org.apache.directory.studio" %  "org.apache.commons.io" % "2.4",
-    "org.specs2"                  %% "specs2"                % "3.7" % "test"
+    "org.scalaz"                  %% "scalaz-core"           % "7.2.1",
+    "org.specs2"                  %% "specs2"                % "3.7" % Test
   )
 }

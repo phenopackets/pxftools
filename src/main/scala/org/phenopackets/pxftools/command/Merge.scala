@@ -3,7 +3,6 @@ package org.phenopackets.pxftools.command
 import java.io.File
 
 import org.backuity.clist._
-import org.phenopackets.api.PhenoPacket
 import org.phenopackets.pxftools.util.MergeUtil
 
 object Merge extends Command(description = "Read in multiple PXF files and output as a single merged PXF file in the specified format.") with Common {
