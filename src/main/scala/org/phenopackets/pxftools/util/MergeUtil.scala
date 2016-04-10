@@ -1,21 +1,18 @@
 package org.phenopackets.pxftools.util
 
-import org.phenopackets.api.PhenoPacket
 import scala.collection.JavaConverters._
-import scala.collection.mutable.Buffer
-import java.util.{ List => JList }
-import org.phenopackets.api.model.entity.Entity
-import org.phenopackets.api.model.entity.Organism
-import scalaz._
-import Scalaz._
-import org.phenopackets.api.io.JsonGenerator
-import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.databind.node.JsonNodeFactory
-import com.fasterxml.jackson.databind.node.ArrayNode
+
+import org.phenopackets.api.PhenoPacket
+
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ArrayNode
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import com.fasterxml.jackson.databind.node.ObjectNode
+
+import scalaz. _ 
+import scalaz.Scalaz. _ 
 
 object MergeUtil {
 
