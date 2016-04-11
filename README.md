@@ -10,7 +10,7 @@ Install `sbt` (Scala Build Tool) on your system. For Mac OS X, it is easily done
 
 `sbt compile`
 
-Development versions of pxftools may depend on the latest snapshot version of the PhenoPackets Java API. You may need to install the latest `phenopackets-api` into your local Maven repository before building pxftools.
+Development versions of pxftools may depend on the latest snapshot version of the [PhenoPackets Java API](https://github.com/phenopackets/phenopacket-reference-implementation). You may need to install the latest `phenopackets-api` into your local Maven repository before building pxftools.
 
 ## Running
 
