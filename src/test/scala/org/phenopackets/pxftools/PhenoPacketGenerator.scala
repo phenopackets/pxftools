@@ -194,11 +194,11 @@ object PhenoPacketGenerator {
       val builder = new PhenoPacket.Builder()
       builder.title(title)
       builder.addDisease(disease)
-      //builder.addDiseaseOccurrenceAssociation(diseaseOccurrenceAssociation) // TODO merge fails with this property set
-      //builder.addEnvironmentAssociation(environmentAssociation) // TODO merge fails with this property set
+      builder.addDiseaseOccurrenceAssociation(diseaseOccurrenceAssociation)
+      builder.addEnvironmentAssociation(environmentAssociation)
       builder.addOrganism(organism)
       builder.addPerson(person)
-      //builder.addPhenotypeAssociation(phenotypeAssociation)
+      builder.addPhenotypeAssociation(phenotypeAssociation)
       builder.addVariant(variant)
       builder.build()
     }
