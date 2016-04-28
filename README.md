@@ -20,6 +20,12 @@ To build the command-line executable, run:
 
 You will find executables for Unix and Windows in `target/universal/stage/bin/`. These depend on the libraries in `target/universal/stage/lib`.
 
+## Packaging a release
+
+`sbt universal:packageZipTarball`
+
+The release package will be at `target/universal/pxftools-<version>.tgz`
+
 ## Usage output
 ```
 Usage
