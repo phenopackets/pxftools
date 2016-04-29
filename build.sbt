@@ -4,7 +4,7 @@ organization  := "org.phenopackets"
 
 name          := "pxftools"
 
-version       := "0.0.1"
+version       := "0.0.2-SNAPSHOT"
 
 scalaVersion  := "2.11.8"
 
@@ -25,6 +25,9 @@ libraryDependencies ++= {
     "org.backuity.clist"          %% "clist-macros"          % "2.0.2" % "provided",
     "org.apache.directory.studio" %  "org.apache.commons.io" % "2.4",
     "org.scalaz"                  %% "scalaz-core"           % "7.2.1",
+    "com.typesafe.scala-logging"  %% "scala-logging"         % "3.4.0",
+    "ch.qos.logback"              %  "logback-classic"       % "1.1.7",
+    "org.codehaus.groovy"         %  "groovy-all"            % "2.4.6",
     "org.specs2"                  %% "specs2"                % "3.7" % Test
   )
 }
