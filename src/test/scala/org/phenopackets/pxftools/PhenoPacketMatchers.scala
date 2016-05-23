@@ -24,8 +24,11 @@ trait PhenoPackeCollectiontMatchers extends MustMatchers {
   def beTheSameEvidenceList(list1: scala.collection.immutable.List[Evidence]): Matcher[scala.collection.immutable.List[Evidence]] =
     ((list2: List[Evidence]) => forallWhen(list1 zip list2) { case (l1, l2) => l1 must beEqualTo(l2) })
 
-  def beTheSameDiseaseList(list1: List[Disease]): Matcher[List[Disease]] =
-    ((list2: List[Disease]) => forallWhen(list1 zip list2) { case (l1, l2) => l1 must beEqualTo(l2) })
+  def beTheSameDiseaseListInAnyOrder(list1: List[Disease]): Matcher[List[Disease]] = {
+    ((list2: List[Disease]) =>
+      (list1.size must beEqualTo(list2.size)) and (
+        forallWhen(list1) { case (l1) => list2 must contain(l1) }))
+  }
 
   def beTheSameEnvironmentAssociationList(list1: List[EnvironmentAssociation]): Matcher[List[EnvironmentAssociation]] =
     ((list2: List[EnvironmentAssociation]) => forallWhen(list1 zip list2) { case (l1, l2) => l1 must beEqualTo(l2) })
@@ -42,8 +45,10 @@ trait PhenoPackeCollectiontMatchers extends MustMatchers {
   def beTheSameVariantAssociationList(list1: List[VariantAssociation]): Matcher[List[VariantAssociation]] =
     ((list2: List[VariantAssociation]) => forallWhen(list1 zip list2) { case (l1, l2) => l1 must beEqualTo(l2) })
 
-  def beTheSameVariantList(list1: List[Variant]): Matcher[List[Variant]] =
-    ((list2: List[Variant]) => forallWhen(list1 zip list2) { case (l1, l2) => l1 must beEqualTo(l2) })
+  def beTheSameVariantListInAnyOrder(list1: List[Variant]): Matcher[List[Variant]] =
+    ((list2: List[Variant]) =>
+      (list1.size must beEqualTo(list2.size)) and (
+        forallWhen(list1) { case (l1) => list2 must contain(l1) }))
 }
 
 object PhenoPackeCollectiontMatchers extends PhenoPackeCollectiontMatchers

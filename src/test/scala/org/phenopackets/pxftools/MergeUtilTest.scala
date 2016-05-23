@@ -29,13 +29,13 @@ class MergeUtilTest extends Specification with ScalaCheck {
 
       mergedPacket.getTitle must beEqualTo(packet2.getTitle)
       mergedPacket.getDiseaseOccurrenceAssociations.toList must beTheSameDiseaseOccurrenceAssociationList(packet1.getDiseaseOccurrenceAssociations.toList ::: packet2.getDiseaseOccurrenceAssociations.toList)
-      mergedPacket.getDiseases.toList must beTheSameDiseaseList(packet1.getDiseases.toList ::: packet2.getDiseases.toList)
+      mergedPacket.getDiseases.toList must beTheSameDiseaseListInAnyOrder(packet1.getDiseases.toList ::: packet2.getDiseases.toList)
       mergedPacket.getEnvironmentAssociations.toList must beTheSameEnvironmentAssociationList(packet1.getEnvironmentAssociations.toList ::: packet2.getEnvironmentAssociations.toList)
       mergedPacket.getOrganisms.toList must beTheSameOrganismList(packet1.getOrganisms.toList ::: packet2.getOrganisms.toList)
       mergedPacket.getPersons.toList must beTheSamePersonList(packet1.getPersons.toList ::: packet2.getPersons.toList)
       mergedPacket.getPhenotypeAssociations.toList must beTheSamePhenotypeAssociationList(packet1.getPhenotypeAssociations.toList ::: packet2.getPhenotypeAssociations.toList)
       mergedPacket.getVariantAssociations.toList must beTheSameVariantAssociationList(packet1.getVariantAssociations.toList ::: packet2.getVariantAssociations.toList)
-      mergedPacket.getVariants.toList must beTheSameVariantList(packet1.getVariants.toList ::: packet2.getVariants.toList)
+      mergedPacket.getVariants.toList must beTheSameVariantListInAnyOrder(packet1.getVariants.toList ::: packet2.getVariants.toList)
     }
 
   }
