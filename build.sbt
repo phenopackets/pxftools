@@ -23,6 +23,7 @@ libraryDependencies ++= {
     "org.phenopackets"            %  "phenopackets-api"      % "0.0.4-SNAPSHOT",
     "org.backuity.clist"          %% "clist-core"            % "2.0.2",
     "org.backuity.clist"          %% "clist-macros"          % "2.0.2" % "provided",
+    "net.sourceforge.owlapi"      %  "owlapi-distribution"   % "4.2.5",
     "org.apache.directory.studio" %  "org.apache.commons.io" % "2.4",
     "org.scalaz"                  %% "scalaz-core"           % "7.2.1",
     "com.typesafe.scala-logging"  %% "scala-logging"         % "3.4.0",
