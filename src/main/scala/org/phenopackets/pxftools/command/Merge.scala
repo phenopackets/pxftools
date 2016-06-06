@@ -10,7 +10,7 @@ object Merge extends Command(description = "Read in multiple PXF files and outpu
   var files = args[Seq[File]](description = "List of PXF files to merge")
 
   override def run(): Unit = {
-    val mergedPhenoPacket = files.map(readPhenoPacketFile).reduce(MergeUtil.mergePhenoPackets)
+    val mergedPhenoPacket = MergeUtil.mergePhenoPackets(files.map(readPhenoPacketFile))
     writePhenoPacket(mergedPhenoPacket, determineOutput, outputWriter)
   }
 
