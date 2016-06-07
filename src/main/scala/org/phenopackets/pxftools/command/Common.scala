@@ -17,6 +17,8 @@ import org.phenopackets.api.io.JsonGenerator
 import org.phenopackets.api.io.JsonReader
 import org.phenopackets.api.io.YamlGenerator
 import org.phenopackets.api.io.YamlReader
+import org.phenopackets.api.io.RDFGenerator
+import org.apache.jena.riot.Lang
 
 trait Common extends Command {
 
@@ -26,12 +28,13 @@ trait Common extends Command {
 
   var out = opt[String](description = "Output file. Omit to write to standard out.", default = "")
 
-  var format = opt[String](description = "Output format. Set the output format to one of:\nyaml\njson", default = "yaml")
+  var format = opt[String](description = "Output format. Set the output format to one of:\nyaml\njson\nturtle", default = "yaml")
 
   def outputWriter: PhenoPacketWriter = format match {
-    case "yaml" => YamlGenerator.render _
-    case "json" => JsonGenerator.render _
-    case _      => throw new ParsingException("Invalid output format.")
+    case "yaml"   => YamlGenerator.render _
+    case "json"   => JsonGenerator.render _
+    case "turtle" => RDFGenerator.render(_, null, Lang.TURTLE) //TODO should we ask for a base?
+    case _        => throw new ParsingException("Invalid output format.")
   }
 
   def determineOutput: OutputStream = out match {
