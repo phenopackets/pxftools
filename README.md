@@ -37,6 +37,7 @@ Options
    --format=STRING : Output format. Set the output format to one of:
                      yaml
                      json
+                     turtle
    --out=STRING    : Output file. Omit to write to standard out.
 
 Commands
