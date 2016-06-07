@@ -19,8 +19,12 @@ import org.phenopackets.api.model.entity.Person
 import org.phenopackets.api.model.association.PhenotypeAssociation
 import org.phenopackets.api.model.condition.Phenotype
 import org.phenopackets.api.model.entity.Variant
+import java.net.URI
+import java.util.UUID
 
 object PhenoPacketGenerator {
+
+  implicit val arbitraryUUID = Arbitrary(Gen.uuid)
 
   def genDiseaseStage: Gen[DiseaseStage] = {
     for {
@@ -52,11 +56,11 @@ object PhenoPacketGenerator {
 
   def genDisease: Gen[Disease] = {
     for {
-      id <- arbitrary[String]
+      id <- arbitrary[UUID]
       label <- arbitrary[String]
     } yield {
       val disease = new Disease()
-      disease.setId(id)
+      disease.setId(id.toString)
       disease.setLabel(label)
       disease
     }
@@ -64,10 +68,10 @@ object PhenoPacketGenerator {
 
   def genOntologyClass: Gen[OntologyClass] = {
     for {
-      id <- arbitrary[String]
+      id <- arbitrary[UUID]
       label <- arbitrary[String]
     } yield {
-      new OntologyClass.Builder(id).setLabel(label).build()
+      new OntologyClass.Builder(id.toString).setLabel(label).build()
     }
 
   }
@@ -90,9 +94,9 @@ object PhenoPacketGenerator {
 
   def genPublication: Gen[Publication] = {
     for {
-      id <- arbitrary[String]
+      id <- arbitrary[UUID]
     } yield {
-      new Publication.Builder().setId(id).build()
+      new Publication.Builder().setId(id.toString).build()
     }
   }
 
@@ -113,22 +117,22 @@ object PhenoPacketGenerator {
 
   def genEnvironmentAssociation: Gen[EnvironmentAssociation] = {
     for {
-      entityId <- arbitrary[String]
+      entityId <- arbitrary[UUID]
       environment <- genEnvironment
       evidence <- genEvidence
     } yield {
-      new EnvironmentAssociation.Builder(environment).setEntityId(entityId).addEvidence(evidence).build()
+      new EnvironmentAssociation.Builder(environment).setEntityId(entityId.toString).addEvidence(evidence).build()
     }
   }
 
   def genOrganism: Gen[Organism] = {
     for {
-      id <- arbitrary[String]
+      id <- arbitrary[UUID]
       label <- arbitrary[String]
       taxon <- genOntologyClass
     } yield {
       val organism = new Organism()
-      organism.setId(id)
+      organism.setId(id.toString)
       organism.setLabel(label)
       organism.setTaxon(taxon)
       organism
@@ -137,22 +141,22 @@ object PhenoPacketGenerator {
 
   def genPerson: Gen[Person] = {
     for {
-      id <- arbitrary[String]
+      id <- arbitrary[UUID]
     } yield {
       val person = new Person()
-      person.setId(id)
+      person.setId(id.toString)
       person
     }
   }
 
   def genPhenotype: Gen[Phenotype] = {
     for {
-      typee <- arbitrary[String]
+      typee <- arbitrary[UUID]
       description <- arbitrary[String]
     } yield {
 
       val pb = new Phenotype.Builder()
-      pb.addType(typee).description(description)
+      pb.addType(typee.toString).description(description)
       pb.build()
     }
   }
@@ -168,12 +172,12 @@ object PhenoPacketGenerator {
 
   def genVariant: Gen[Variant] = {
     for {
-      id <- arbitrary[String]
+      id <- arbitrary[UUID]
       label <- arbitrary[String]
       description <- arbitrary[String]
     } yield {
       val variant = new Variant()
-      variant.setId(id)
+      variant.setId(id.toString)
       variant.setLabel(label)
       variant.setDescriptionHGVS(description)
       variant
