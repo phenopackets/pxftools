@@ -3,7 +3,8 @@ package org.phenopackets.pxftools.util
 import org.phenopackets.api.PhenoPacket
 import org.phenopackets.api.io.RDFGenerator
 import org.phenopackets.api.io.RDFReader
-import org.apache.jena.rdf.model.ModelFactory
+
+import com.hp.hpl.jena.rdf.model.ModelFactory
 
 object MergeUtil {
 
