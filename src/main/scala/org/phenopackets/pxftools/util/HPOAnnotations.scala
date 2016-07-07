@@ -109,21 +109,23 @@ object HPOAnnotations extends LazyLogging {
     "OMIM" -> "obo:OMIM_").asJava)
 
   //FIXME add in appropriate IRIs once these are available
-  private val knownEvidenceCodes: Map[String, Resource] = Map( 
-  //    "ICE" -> ResourceFactory.createResource(""),
-  //    "IEA" -> ResourceFactory.createResource(""),
-  //    "ITM" -> ResourceFactory.createResource(""),
-  //    "PCS" -> ResourceFactory.createResource(""),
-  //    "TAE" -> ResourceFactory.createResource(""),
-  //    "TAS" -> ResourceFactory.createResource(""),
-  //    "TEA" -> ResourceFactory.createResource("")
-  )
+  private val knownEvidenceCodes: Map[String, Resource] = Map(
+    //    "ICE" -> ResourceFactory.createResource(""),
+    "IEA" -> ResourceFactory.createResource("http://purl.obolibrary.org/obo/ECO_0000501"),
+    //    "ITM" -> ResourceFactory.createResource(""),
+    //    "PCS" -> ResourceFactory.createResource(""),
+    //    "TAE" -> ResourceFactory.createResource(""),
+    //    "TEA" -> ResourceFactory.createResource(""),
+    "TAS" -> ResourceFactory.createResource("http://purl.obolibrary.org/obo/ECO_0000304"))
 
   /**
    * HPO annotations use shorthand labels as evidence IDs
    */
-  private def evidenceCodesToURI(code: String): Option[Resource] =
-    knownEvidenceCodes.get(code).orElse(evidenceCodesToURIFromECO.get(code))
+  private def evidenceCodesToURI(code: String): Option[Resource] = {
+    // Avoiding loading of ECO for now since most of the evidence codes in the data are not there
+    // knownEvidenceCodes.get(code).orElse(evidenceCodesToURIFromECO.get(code))
+    knownEvidenceCodes.get(code)
+  }
 
   private lazy val evidenceCodesToURIFromECO: Map[String, Resource] = {
     val manager = OWLManager.createOWLOntologyManager()
