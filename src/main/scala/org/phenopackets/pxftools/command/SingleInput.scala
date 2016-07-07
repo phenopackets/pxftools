@@ -21,11 +21,12 @@ import org.phenopackets.api.io.YamlReader
 
 trait SingleInput extends Command {
 
-  var in = opt[String](description = "Input file. Pass '-' or omit to read from standard in.", default = "-")
+  var infile = arg[Option[String]](description = "Input file. Omit to read from standard in.")
 
-  def determineInput: InputStream = in match {
-    case "-" => System.in
-    case _   => new FileInputStream(new File(in))
+  def determineInput: InputStream = infile match {
+    case Some("-")      => System.in
+    case Some(filepath) => new FileInputStream(new File(filepath))
+    case None           => System.in
   }
 
 }

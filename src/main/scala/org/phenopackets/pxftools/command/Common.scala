@@ -30,15 +30,16 @@ trait Common extends Command {
 
   var out = opt[String](description = "Output file. Omit to write to standard out.", default = "")
 
-  var informat = opt[Option[String]](description = "Input format. By default both yaml and json will be attempted. Set the input format to one of:\nyaml\njson\nhpo-phenote")
+  var informat = opt[String](description = "Input format. By default both yaml and json will be attempted. Set the input format to one of:\nyaml\njson\nhpo-phenote", default = "guess")
   var outformat = opt[String](description = "Output format. Set the output format to one of:\nyaml\njson\nturtle", default = "yaml")
 
-  def inputReader: Option[PhenoPacketReader] = informat.map(_ match {
-    case "yaml"        => YamlReader.readInputStream
-    case "json"        => JsonReader.readInputStream
-    case "hpo-phenote" => HPOAnnotations.read
+  def inputReader: Option[PhenoPacketReader] = informat match {
+    case "yaml"        => Option(YamlReader.readInputStream)
+    case "json"        => Option(JsonReader.readInputStream)
+    case "hpo-phenote" => Option(HPOAnnotations.read)
+    case "guess"       => None
     case _             => throw new ParsingException("Invalid input format.")
-  })
+  }
 
   def outputWriter: PhenoPacketWriter = outformat match {
     case "yaml"   => YamlGenerator.render

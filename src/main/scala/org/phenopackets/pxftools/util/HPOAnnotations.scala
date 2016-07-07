@@ -33,7 +33,9 @@ object HPOAnnotations extends LazyLogging {
   def importFromTable(table: CSVReader): PhenoPacket = {
     val packetURI = s"urn:uuid:${UUID.randomUUID.toString}"
     val packet = ResourceFactory.createResource(packetURI)
+    println(packet)
     val triples = table.iteratorWithHeaders.flatMap(rowToTriples(_, packet)).toSeq
+    println(triples)
     val model = ModelFactory.createDefaultModel()
     model.add(triples.asJava)
     RDFReader.readModel(model, packetURI)

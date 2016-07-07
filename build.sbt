@@ -4,7 +4,7 @@ organization  := "org.phenopackets"
 
 name          := "pxftools"
 
-version       := "0.0.2"
+version       := "0.0.3"
 
 scalaVersion  := "2.11.8"
 

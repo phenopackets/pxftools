@@ -14,6 +14,8 @@ Development versions of pxftools may depend on the latest snapshot version of th
 
 ## Running
 
+You can download a prepackaged [release](https://github.com/phenopackets/pxftools/releases).
+
 To build the command-line executable, run:
 
 `sbt stage`
@@ -34,16 +36,19 @@ Usage
 
 Options
 
-   --format=STRING : Output format. Set the output format to one of:
-                     yaml
-                     json
-                     turtle
-   --out=STRING    : Output file. Omit to write to standard out.
+   --informat=STRING  : Input format. By default both yaml and json will be attempted. Set the input format to one of:
+                        yaml
+                        json
+                        hpo-phenote
+   --out=STRING       : Output file. Omit to write to standard out.
+   --outformat=STRING : Output format. Set the output format to one of:
+                        yaml
+                        json
+                        turtle
 
 Commands
 
-   convert [command options] : Read in a PXF file and output in the specified format.
-      --in=STRING : Input file. Pass '-' or omit to read from standard in.
+   convert <infile> : Read in a PXF file and output in the specified format.
 
    merge <files> ... : Read in multiple PXF files and output as a single merged PXF file in the specified format.
 ```
