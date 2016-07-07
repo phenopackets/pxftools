@@ -32,8 +32,6 @@ libraryDependencies ++= {
     "org.apache.directory.studio" %  "org.apache.commons.io" % "2.4",
     "org.scalaz"                  %% "scalaz-core"           % "7.2.1",
     "com.github.tototoshi"        %% "scala-csv"             % "1.3.3",
-    "com.nrinaudo"                %% "kantan.csv"            % "0.1.12",
-    "com.nrinaudo"                %% "kantan.csv-generic"    % "0.1.12",
     "com.typesafe.scala-logging"  %% "scala-logging"         % "3.4.0",
     "ch.qos.logback"              %  "logback-classic"       % "1.1.7",
     "org.codehaus.groovy"         %  "groovy-all"            % "2.4.6",
