@@ -1,5 +1,7 @@
 package org.phenopackets.pxftools.util
 
+import java.io.InputStream
+
 import java.util.UUID
 
 import scala.collection.JavaConverters._
@@ -16,6 +18,7 @@ import org.semanticweb.owlapi.model.IRI
 
 import com.github.jsonldjava.core.Context
 import com.github.tototoshi.csv.CSVReader
+import com.github.tototoshi.csv.TSVFormat
 import com.hp.hpl.jena.rdf.model.ModelFactory
 import com.hp.hpl.jena.rdf.model.Resource
 import com.hp.hpl.jena.rdf.model.ResourceFactory
@@ -23,8 +26,6 @@ import com.hp.hpl.jena.rdf.model.Statement
 import com.hp.hpl.jena.vocabulary.RDF
 import com.hp.hpl.jena.vocabulary.RDFS
 import com.typesafe.scalalogging.LazyLogging
-import com.github.tototoshi.csv.TSVFormat
-import java.io.InputStream
 
 object HPOAnnotations extends LazyLogging {
 
@@ -79,11 +80,11 @@ object HPOAnnotations extends LazyLogging {
       row.getOpt("Description").foreach { description =>
         statements += ResourceFactory.createStatement(phenotype, Description, ResourceFactory.createTypedLiteral(description.trim))
       }
-      if (row.getOpt("Evidence ID").nonEmpty || row.getOpt("Pub").nonEmpty) {
+      if (row.getOpt("Evidence ID").nonEmpty || row.getOpt("Pub").nonEmpty) { //FIXME handle semicolon?
         val evidence = ResourceFactory.createResource()
         statements += ResourceFactory.createStatement(association, Evidence, evidence)
         row.getOpt("Evidence ID").foreach { evidenceID =>
-          val evidenceTypeOpt = evidenceCodesToURI.get(evidenceID.trim)
+          val evidenceTypeOpt = evidenceCodesToURI(evidenceID.trim)
           val evidenceType = evidenceTypeOpt.getOrElse {
             logger.warn(s"No IRI found for evidence code $evidenceID")
             ResourceFactory.createResource(evidenceID.trim)
@@ -107,10 +108,24 @@ object HPOAnnotations extends LazyLogging {
     "HP" -> "obo:HP_",
     "OMIM" -> "obo:OMIM_").asJava)
 
+  //FIXME add in appropriate IRIs once these are available
+  private val knownEvidenceCodes: Map[String, Resource] = Map( 
+  //    "ICE" -> ResourceFactory.createResource(""),
+  //    "IEA" -> ResourceFactory.createResource(""),
+  //    "ITM" -> ResourceFactory.createResource(""),
+  //    "PCS" -> ResourceFactory.createResource(""),
+  //    "TAE" -> ResourceFactory.createResource(""),
+  //    "TAS" -> ResourceFactory.createResource(""),
+  //    "TEA" -> ResourceFactory.createResource("")
+  )
+
   /**
    * HPO annotations use shorthand labels as evidence IDs
    */
-  private lazy val evidenceCodesToURI: Map[String, Resource] = {
+  private def evidenceCodesToURI(code: String): Option[Resource] =
+    knownEvidenceCodes.get(code).orElse(evidenceCodesToURIFromECO.get(code))
+
+  private lazy val evidenceCodesToURIFromECO: Map[String, Resource] = {
     val manager = OWLManager.createOWLOntologyManager()
     val eco = manager.loadOntology(IRI.create("http://purl.obolibrary.org/obo/eco.owl"))
     val HasExactSynonym = AnnotationProperty("http://www.geneontology.org/formats/oboInOwl#hasExactSynonym")
