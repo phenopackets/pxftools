@@ -1,7 +1,6 @@
 package org.phenopackets.pxftools.util
 
 import java.io.InputStream
-
 import java.util.UUID
 
 import scala.collection.JavaConverters._
@@ -43,6 +42,7 @@ object HPOAnnotations extends LazyLogging {
   private def rowToTriples(row: Map[String, String], packet: Resource): Set[Statement] = {
     val statements = mutable.Set.empty[Statement]
     row.getOpt("Disease ID").foreach { diseaseID =>
+      //FIXME this next line causes a pause the first time through
       val disease = ResourceFactory.createResource(ContextUtil.expandIdentifierAsValue(diseaseID.trim, HPOContext))
       statements += ResourceFactory.createStatement(packet, Diseases, disease)
       row.getOpt("Disease Name").foreach { diseaseLabel =>
@@ -128,6 +128,7 @@ object HPOAnnotations extends LazyLogging {
   }
 
   private lazy val evidenceCodesToURIFromECO: Map[String, Resource] = {
+    logger.info("Downloading ECO to look for evidence code mappings.")
     val manager = OWLManager.createOWLOntologyManager()
     val eco = manager.loadOntology(IRI.create("http://purl.obolibrary.org/obo/eco.owl"))
     val HasExactSynonym = AnnotationProperty("http://www.geneontology.org/formats/oboInOwl#hasExactSynonym")
