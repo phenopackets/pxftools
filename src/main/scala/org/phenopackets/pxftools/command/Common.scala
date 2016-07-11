@@ -16,7 +16,7 @@ import org.backuity.clist._
 import org.phenopackets.api.PhenoPacket
 import org.phenopackets.api.io.JsonGenerator
 import org.phenopackets.api.io.JsonReader
-import org.phenopackets.api.io.RDFGenerator
+import org.phenopackets.api.io.RdfGenerator
 import org.phenopackets.api.io.YamlGenerator
 import org.phenopackets.api.io.YamlReader
 import org.phenopackets.pxftools.util.HPOAnnotations
@@ -44,7 +44,7 @@ trait Common extends Command {
   def outputWriter: PhenoPacketWriter = outformat match {
     case "yaml"   => YamlGenerator.render
     case "json"   => JsonGenerator.render
-    case "turtle" => RDFGenerator.render(_, null, Lang.TURTLE) //TODO should we ask for a base?
+    case "turtle" => RdfGenerator.render(_, null, Lang.TURTLE) //TODO should we ask for a base?
     case _        => throw new ParsingException("Invalid output format.")
   }
 

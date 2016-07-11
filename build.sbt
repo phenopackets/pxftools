@@ -22,7 +22,7 @@ javaOptions += "-Xmx4G"
 
 libraryDependencies ++= {
   Seq(
-    "org.phenopackets"            %  "phenopackets-api"      % "0.0.5" exclude("org.slf4j", "slf4j-log4j12"),
+    "org.phenopackets"            %  "phenopackets-api"      % "0.0.6-SNAPSHOT" exclude("org.slf4j", "slf4j-log4j12"),
     "org.backuity.clist"          %% "clist-core"            % "2.0.2",
     "org.backuity.clist"          %% "clist-macros"          % "2.0.2" % "provided",
     "net.sourceforge.owlapi"      %  "owlapi-distribution"   % "4.2.5",

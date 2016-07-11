@@ -7,7 +7,7 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 
 import org.phenopackets.api.PhenoPacket
-import org.phenopackets.api.io.RDFReader
+import org.phenopackets.api.io.RdfReader
 import org.phenopackets.api.util.ContextUtil
 import org.phenopackets.pxftools.util.PhenoPacketVocabulary._
 import org.phenoscape.scowl._
@@ -36,7 +36,7 @@ object HPOAnnotations extends LazyLogging {
     val triples = table.iteratorWithHeaders.flatMap(rowToTriples(_, packet)).toSeq
     val model = ModelFactory.createDefaultModel()
     model.add(triples.asJava)
-    RDFReader.readModel(model, packetURI)
+    RdfReader.readModel(model, packetURI)
   }
 
   private def rowToTriples(row: Map[String, String], packet: Resource): Set[Statement] = {
