@@ -233,8 +233,6 @@ object NoctuaModel {
     IRI.create(expandedID)
   }
 
-  private def entityIRI(entity: Entity, context: Context): Option[IRI] = Option(entity.getId).map(iri(_, context))
-
   private def createPacketIRI(packet: PhenoPacket, context: Context): IRI = Option(packet.getId)
     .map(id => iri(id, context))
     .getOrElse(newUUIDIRI())
