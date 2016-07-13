@@ -20,6 +20,7 @@ import org.phenopackets.api.io.RdfGenerator
 import org.phenopackets.api.io.YamlGenerator
 import org.phenopackets.api.io.YamlReader
 import org.phenopackets.pxftools.util.HPOAnnotations
+import org.phenopackets.pxftools.util.NoctuaModel
 
 trait Common extends Command {
 
@@ -31,7 +32,7 @@ trait Common extends Command {
   var out = opt[String](description = "Output file. Omit to write to standard out.", default = "")
 
   var informat = opt[String](description = "Input format. By default both yaml and json will be attempted. Set the input format to one of:\nyaml\njson\nhpo-phenote", default = "guess")
-  var outformat = opt[String](description = "Output format. Set the output format to one of:\nyaml\njson\nturtle", default = "yaml")
+  var outformat = opt[String](description = "Output format. Set the output format to one of:\nyaml\njson\nturtle\nnoctua", default = "yaml")
 
   def inputReader: Option[PhenoPacketReader] = informat match {
     case "yaml"        => Option(YamlReader.readInputStream)
@@ -45,6 +46,7 @@ trait Common extends Command {
     case "yaml"   => YamlGenerator.render
     case "json"   => JsonGenerator.render
     case "turtle" => RdfGenerator.render(_, null, Lang.TURTLE) //TODO should we ask for a base?
+    case "noctua" => NoctuaModel.render
     case _        => throw new ParsingException("Invalid output format.")
   }
 
