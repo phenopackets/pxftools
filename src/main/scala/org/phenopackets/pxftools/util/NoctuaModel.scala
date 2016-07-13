@@ -67,26 +67,34 @@ object NoctuaModel {
     var axioms = Set.empty[OWLAxiom]
     val packetIRI = createPacketIRI(packet, context)
     axioms ++= Option(packet.getTitle).map(packetIRI Annotation (DCTitle, _))
-    axioms ++= packet.getDiseases.asScala.flatMap(translateDisease(_, context))
-    axioms ++= packet.getPhenotypeAssociations.asScala.flatMap(translatePhenotypeAssociation(_, context))
+    var entityToIndividual = Map.empty[String, OWLNamedIndividual]
+    for {
+      disease <- packet.getDiseases.asScala
+      diseaseID = disease.getId
+      (diseaseInd, diseaseAxioms) = translateDisease(disease, context)
+    } {
+      entityToIndividual += diseaseID -> diseaseInd
+      axioms ++= diseaseAxioms
+    }
+    axioms ++= packet.getPhenotypeAssociations.asScala.flatMap(translatePhenotypeAssociation(_, entityToIndividual, context))
     axioms
   }
 
-  def translateDisease(disease: Disease, context: Context): Set[OWLAxiom] = {
-    entityIRI(disease, context).map { diseaseIRI =>
-      var axioms = Set.empty[OWLAxiom]
-      val diseaseIndividual = Individual(diseaseIRI) //punning
-      axioms += Declaration(diseaseIndividual)
-      axioms += diseaseIndividual Type Class(diseaseIRI)
-      axioms ++= Option(disease.getLabel).map(diseaseIRI Annotation (RDFSLabel, _))
-      axioms ++= translateClassInstance(disease, diseaseIndividual, context)
-      axioms
-    }.getOrElse(Set.empty)
+  def translateDisease(disease: Disease, context: Context): (OWLNamedIndividual, Set[OWLAxiom]) = {
+    val diseaseIRI = iri(disease.getId, context)
+    var axioms = Set.empty[OWLAxiom]
+    val diseaseIndividual = Individual(newUUIDIRI())
+    axioms += Declaration(diseaseIndividual)
+    axioms += diseaseIndividual Type Class(diseaseIRI)
+    axioms ++= Option(disease.getLabel).map(diseaseIRI Annotation (RDFSLabel, _))
+    axioms ++= translateClassInstance(disease, diseaseIndividual, context)
+    (diseaseIndividual, axioms)
+
   }
 
-  def translatePhenotypeAssociation(association: PhenotypeAssociation, context: Context): Set[OWLAxiom] = {
+  def translatePhenotypeAssociation(association: PhenotypeAssociation, entityToIndividual: Map[String, OWLNamedIndividual], context: Context): Set[OWLAxiom] = {
     var axioms = Set.empty[OWLAxiom]
-    val entity = Individual(iri(association.getEntityId, context))
+    val entity = entityToIndividual.getOrElse(association.getEntityId, Individual(iri(association.getEntityId, context)))
     val (phenotype, phenotypeAxioms) = translatePhenotype(association.getPhenotype, context)
     axioms ++= phenotypeAxioms
     val associationAxiom = entity Fact (HasPart, phenotype)
@@ -193,7 +201,7 @@ object NoctuaModel {
     val pubIndividual = Individual(iri(publication.getId, context))
     axioms += Declaration(pubIndividual)
     axioms += pubIndividual Type Publication
-    axioms ++= Option(publication.getTitle).map(pubIndividual Annotation (DCTitle, _)).toSet
+    axioms ++= Option(publication.getTitle).map(pubIndividual Annotation (DCTitle, _))
     (pubIndividual, axioms)
   }
 
