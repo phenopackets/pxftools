@@ -39,10 +39,10 @@ object NoctuaModel {
   private val RDFSComment = factory.getRDFSComment
   private val RDFSLabel = factory.getRDFSLabel
   private val HasPart = ObjectProperty("http://purl.obolibrary.org/obo/BFO_0000051")
-  private val ConditionToFrequency = ObjectProperty("http://example.org/condition_to_frequency")
-  private val ConditionToSeverity = ObjectProperty("http://example.org/condition_to_severity")
-  private val TemporalRegionToStart = DataProperty("http://example.org/temporal_region_start_at")
-  private val TemporalRegionToEnd = DataProperty("http://example.org/temporal_region_end_at")
+  private val ConditionToFrequency = ObjectProperty("http://example.org/condition_to_frequency") //FIXME
+  private val ConditionToSeverity = ObjectProperty("http://example.org/condition_to_severity") //FIXME
+  private val TemporalRegionToStart = DataProperty("http://example.org/temporal_region_start_at") //FIXME
+  private val TemporalRegionToEnd = DataProperty("http://example.org/temporal_region_end_at") //FIXME
   private val ExistenceStartsDuring = ObjectProperty("http://purl.obolibrary.org/obo/RO_0002488")
   private val ExistenceEndsDuring = ObjectProperty("http://purl.obolibrary.org/obo/RO_0002492")
   private val AxiomHasEvidence = AnnotationProperty("http://purl.obolibrary.org/obo/RO_0002612")
