@@ -221,11 +221,7 @@ object NoctuaModel {
 
   private def iri(id: String, context: Context): IRI = {
     val expanded = ContextUtil.expandIdentifierAsValue(id, context)
-    val expandedID = if (expanded.contains(":")) {
-      expanded
-    } else {
-      s"urn:local:$expanded"
-    }
+    val expandedID = if (expanded.contains(":")) expanded else s"urn:local:$expanded"
     IRI.create(expandedID)
   }
 
