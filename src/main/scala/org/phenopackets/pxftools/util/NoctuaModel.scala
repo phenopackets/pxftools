@@ -12,30 +12,30 @@ import org.phenopackets.api.model.condition.ConditionSeverity
 import org.phenopackets.api.model.condition.Phenotype
 import org.phenopackets.api.model.condition.TemporalRegion
 import org.phenopackets.api.model.entity.Disease
-import org.phenopackets.api.model.entity.Entity
 import org.phenopackets.api.model.environment.Environment
 import org.phenopackets.api.model.evidence.Evidence
-import org.phenopackets.api.model.evidence.Publication
 import org.phenopackets.api.model.ontology.ClassInstance
 import org.phenopackets.api.util.ContextUtil
 import org.phenoscape.scowl._
 import org.semanticweb.owlapi.apibinding.OWLManager
+import org.semanticweb.owlapi.formats.ManchesterSyntaxDocumentFormat
+import org.semanticweb.owlapi.io.StringDocumentTarget
 import org.semanticweb.owlapi.model.IRI
 import org.semanticweb.owlapi.model.OWLAxiom
 import org.semanticweb.owlapi.model.OWLNamedIndividual
 import org.semanticweb.owlapi.model.OWLOntology
-import org.semanticweb.owlapi.io.OWLOntologyDocumentTarget
 
 import com.github.jsonldjava.core.Context
-import com.hp.hpl.jena.vocabulary.DCTerms
-import org.semanticweb.owlapi.formats.ManchesterSyntaxDocumentFormat
-import org.semanticweb.owlapi.io.StringDocumentTarget
+import com.hp.hpl.jena.vocabulary.DC_11
 
 object NoctuaModel {
 
   private val factory = OWLManager.getOWLDataFactory
-  private val DCTitle = AnnotationProperty(DCTerms.title.getURI)
-  private val DCDescription = AnnotationProperty(DCTerms.description.getURI)
+  private val DCTitle = AnnotationProperty(DC_11.title.getURI)
+  private val DCDescription = AnnotationProperty(DC_11.description.getURI)
+  private val DCSource = AnnotationProperty(DC_11.source.getURI)
+  private val DCDate = AnnotationProperty(DC_11.date.getURI)
+  private val DCContributor = AnnotationProperty(DC_11.contributor.getURI)
   private val RDFSComment = factory.getRDFSComment
   private val RDFSLabel = factory.getRDFSLabel
   private val HasPart = ObjectProperty("http://purl.obolibrary.org/obo/BFO_0000051")
@@ -45,7 +45,7 @@ object NoctuaModel {
   private val TemporalRegionToEnd = DataProperty("http://example.org/temporal_region_end_at") //FIXME
   private val ExistenceStartsDuring = ObjectProperty("http://purl.obolibrary.org/obo/RO_0002488")
   private val ExistenceEndsDuring = ObjectProperty("http://purl.obolibrary.org/obo/RO_0002492")
-  private val AxiomHasEvidence = AnnotationProperty("http://purl.obolibrary.org/obo/RO_0002612")
+  private val AxiomHasEvidence = AnnotationProperty("http://geneontology.org/lego/evidence")
   private val HasSupportingReference = ObjectProperty("http://purl.obolibrary.org/obo/SEPIO_0000124")
   private val Publication = Class("http://purl.obolibrary.org/obo/IAO_0000311")
 
@@ -187,22 +187,12 @@ object NoctuaModel {
     axioms += Declaration(evidenceIndividual)
     evidence.getSupportingEntities.asScala.map(_ => ???) //TODO
     for {
-      (pubIndividual, pubAxioms) <- evidence.getSupportingPublications.asScala.map(translatePublication(_, context))
+      pub <- evidence.getSupportingPublications.asScala
     } {
-      axioms += evidenceIndividual Fact (HasSupportingReference, pubIndividual)
-      axioms ++= pubAxioms
+      axioms += evidenceIndividual Annotation (DCSource, pub.getId)
     }
     axioms ++= translateClassInstance(evidence, evidenceIndividual, context)
     (evidenceIndividual, axioms)
-  }
-
-  def translatePublication(publication: Publication, context: Context): (OWLNamedIndividual, Set[OWLAxiom]) = {
-    var axioms = Set.empty[OWLAxiom]
-    val pubIndividual = Individual(iri(publication.getId, context))
-    axioms += Declaration(pubIndividual)
-    axioms += pubIndividual Type Publication
-    axioms ++= Option(publication.getTitle).map(pubIndividual Annotation (DCTitle, _))
-    (pubIndividual, axioms)
   }
 
   def translateClassInstance(instance: ClassInstance, individual: OWLNamedIndividual, context: Context): Set[OWLAxiom] = {
@@ -237,6 +227,6 @@ object NoctuaModel {
     .map(id => iri(id, context))
     .getOrElse(newUUIDIRI())
 
-  private def newUUIDIRI(): IRI = IRI.create(s"urn:uuid:${UUID.randomUUID.toString}")
+  private def newUUIDIRI(): IRI = IRI.create(s"http://model.geneontology.org/${UUID.randomUUID.toString}")
 
 }
