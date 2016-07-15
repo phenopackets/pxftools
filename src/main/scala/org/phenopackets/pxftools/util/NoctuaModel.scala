@@ -28,8 +28,9 @@ import org.semanticweb.owlapi.model.OWLOntology
 
 import com.github.jsonldjava.core.Context
 import com.hp.hpl.jena.vocabulary.DC_11
+import com.typesafe.scalalogging.LazyLogging
 
-object NoctuaModel {
+object NoctuaModel extends LazyLogging {
 
   private val factory = OWLManager.getOWLDataFactory
   private val DCTitle = AnnotationProperty(DC_11.title.getURI)
@@ -220,7 +221,13 @@ object NoctuaModel {
 
   private def iri(id: String, context: Context): IRI = {
     val expanded = ContextUtil.expandIdentifierAsValue(id, context)
-    val expandedID = if (expanded.contains(":")) expanded else s"urn:local:$expanded"
+    val expandedID = if (expanded.contains(":")) {
+      if (!expanded.startsWith("http")) logger.warn(s"No HTTP URI found for identifer: $id")
+      expanded
+    } else {
+      logger.warn(s"No URI found for identifer: $id")
+      s"urn:local:$expanded"
+    }
     IRI.create(expandedID)
   }
 
