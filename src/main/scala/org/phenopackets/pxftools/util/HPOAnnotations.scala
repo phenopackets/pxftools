@@ -31,7 +31,7 @@ object HPOAnnotations extends LazyLogging {
   def read(stream: InputStream): PhenoPacket = importFromTable(CSVReader.open(scala.io.Source.fromInputStream(stream, "utf-8"))(new TSVFormat {}))
 
   def importFromTable(table: CSVReader): PhenoPacket = {
-    val packetURI = s"urn:uuid:${UUID.randomUUID.toString}"
+    val packetURI = s"http://model.geneontology.org/${UUID.randomUUID.toString}"
     val packet = ResourceFactory.createResource(packetURI)
     val triples = table.iteratorWithHeaders.flatMap(rowToTriples(_, packet)).toSeq
     val model = ModelFactory.createDefaultModel()

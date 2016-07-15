@@ -20,6 +20,7 @@ import org.phenoscape.scowl._
 import org.semanticweb.owlapi.apibinding.OWLManager
 import org.semanticweb.owlapi.formats.ManchesterSyntaxDocumentFormat
 import org.semanticweb.owlapi.io.StringDocumentTarget
+import org.semanticweb.owlapi.model.AddOntologyAnnotation
 import org.semanticweb.owlapi.model.IRI
 import org.semanticweb.owlapi.model.OWLAxiom
 import org.semanticweb.owlapi.model.OWLNamedIndividual
@@ -53,7 +54,9 @@ object NoctuaModel {
     val manager = OWLManager.createOWLOntologyManager()
     val context = ContextUtil.getJSONLDContext(packet)
     val packetIRI = createPacketIRI(packet, context)
-    manager.createOntology(translatePacket(packet, context).asJava, packetIRI)
+    val ont = manager.createOntology(translatePacket(packet, context).asJava, packetIRI)
+    Option(packet.getTitle).map(t => new AddOntologyAnnotation(ont, Annotation(DCTitle, t))).foreach(manager.applyChange)
+    ont
   }
 
   def render(packet: PhenoPacket): String = {
@@ -65,8 +68,6 @@ object NoctuaModel {
 
   def translatePacket(packet: PhenoPacket, context: Context): Set[OWLAxiom] = {
     var axioms = Set.empty[OWLAxiom]
-    val packetIRI = createPacketIRI(packet, context)
-    axioms ++= Option(packet.getTitle).map(packetIRI Annotation (DCTitle, _))
     var entityToIndividual = Map.empty[String, OWLNamedIndividual]
     for {
       disease <- packet.getDiseases.asScala
