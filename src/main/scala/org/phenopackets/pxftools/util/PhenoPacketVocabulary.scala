@@ -18,6 +18,8 @@ object PhenoPacketVocabulary {
   val Evidence = p(s"$Pheno/evidence")
   val Description = p(s"$DC/description")
   val Source = p(s"$DC/source")
+  val Contributor = p(s"$DC/contributor")
+  val Date = p(s"$DC/date")
   val OWLComplementOf = p("http://www.w3.org/2002/07/owl#complementOf")
 
 }

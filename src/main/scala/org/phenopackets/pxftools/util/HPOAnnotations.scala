@@ -99,6 +99,16 @@ object HPOAnnotations extends LazyLogging {
           statements += ResourceFactory.createStatement(evidence, Source, pub)
         }
       }
+      row.getOpt("Assigned by").foreach { contributorID =>
+        val contributor = knownContributors.get(contributorID.trim).getOrElse {
+          logger.warn(s"No IRI found for contributor $contributorID")
+          ResourceFactory.createResource(contributorID.trim)
+        }
+        statements += ResourceFactory.createStatement(association, Contributor, contributor)
+      }
+      row.getOpt("Date Created").flatMap(processDate).foreach { date =>
+        statements += ResourceFactory.createStatement(association, Date, ResourceFactory.createTypedLiteral(date))
+      }
     }
     statements.toSet
   }
@@ -138,6 +148,38 @@ object HPOAnnotations extends LazyLogging {
       synonym -> ResourceFactory.createResource(term.toString)
     }).toMap
   }
+
+  private def processDate(text: String): Option[String] = {
+    val dateOpt = text.trim match {
+      case dotDate(d, m, y)   => Option(y.toInt, m.toInt, d.toInt)
+      case dashDate(d, m, y)  => Option(y.toInt, months.indexOf(m), d.toInt)
+      case commaDate(m, d, y) => Option(y.toInt, months.indexOf(m), d.toInt)
+      case _ => {
+        logger.warn(s"Unrecognized date format, dropping: $text")
+        None
+      }
+    }
+    for {
+      (year, month, day) <- dateOpt
+    } yield {
+      val yearPad = f"${year.toInt}%04d"
+      val monthPad = f"${month.toInt}%02d"
+      val dayPad = f"${day.toInt}%02d"
+      s"$yearPad-$monthPad-$dayPad"
+    }
+  }
+
+  private val months: Seq[String] = Seq("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+  private val knownContributors: Map[String, Resource] = Map(
+    "HPO:probinson" -> ResourceFactory.createResource("http://orcid.org/0000-0002-0736-9199"),
+    "HPO:skoehler" -> ResourceFactory.createResource("http://orcid.org/0000-0002-5316-1399"))
+
+  private val dotDate = raw"(\d\d)\.(\d\d)\.(\d\d\d\d)".r
+
+  private val dashDate = raw"(\d+)-(\w\w\w)-(\d\d\d\d)".r
+
+  private val commaDate = raw"(\w\w\w) (\d+), (\d\d\d\d)".r
 
   private implicit class NullEmptyStringMap(val self: Map[String, String]) extends AnyVal {
 

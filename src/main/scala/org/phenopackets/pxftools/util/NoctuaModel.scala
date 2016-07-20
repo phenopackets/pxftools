@@ -107,6 +107,17 @@ object NoctuaModel extends LazyLogging {
       axioms += associationAxiom Annotation (AxiomHasEvidence, evidenceInd)
       axioms ++= evidenceAxioms
     }
+    for {
+      contributor <- Option(association.getContributorId)
+    } {
+      // In the future, contributor should be an IRI
+      axioms += associationAxiom Annotation (DCContributor, contributor)
+    }
+    for {
+      date <- Option(association.getDate)
+    } {
+      axioms += associationAxiom Annotation (DCDate, date)
+    }
     axioms
   }
 
