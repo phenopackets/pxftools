@@ -43,7 +43,7 @@ object HPOAnnotations extends LazyLogging {
     val statements = mutable.Set.empty[Statement]
     row.getOpt("Disease ID").foreach { diseaseID =>
       //FIXME this next line causes a pause the first time through
-      val disease = ResourceFactory.createResource(ContextUtil.expandIdentifierAsValue(diseaseID.trim, HPOContext))
+      val disease = ResourceFactory.createResource(ContextUtil.expandIdentifierAsValue(tweakID(diseaseID.trim), HPOContext))
       statements += ResourceFactory.createStatement(packet, Diseases, disease)
       row.getOpt("Disease Name").foreach { diseaseLabel =>
         statements += ResourceFactory.createStatement(disease, RDFS.label, ResourceFactory.createTypedLiteral(diseaseLabel.trim))
@@ -95,7 +95,7 @@ object HPOAnnotations extends LazyLogging {
           }
         }
         row.getOpt("Pub").foreach { pubID =>
-          val pub = ResourceFactory.createResource(ContextUtil.expandIdentifierAsValue(pubID.trim, HPOContext))
+          val pub = ResourceFactory.createResource(ContextUtil.expandIdentifierAsValue(tweakID(pubID.trim), HPOContext))
           statements += ResourceFactory.createStatement(evidence, Source, pub)
         }
       }
@@ -117,7 +117,8 @@ object HPOAnnotations extends LazyLogging {
     "obo" -> "http://purl.obolibrary.org/obo/",
     "HP" -> "obo:HP_",
     "OMIM" -> "obo:OMIM_",
-    "MIM" -> "obo:OMIM_").asJava)
+    "MIM" -> "obo:OMIM_",
+    "DOID" -> "obo:DOID_").asJava)
 
   //FIXME add in appropriate IRIs once these are available
   private val knownEvidenceCodes: Map[String, Resource] = Map(
@@ -148,6 +149,14 @@ object HPOAnnotations extends LazyLogging {
     } yield {
       synonym -> ResourceFactory.createResource(term.toString)
     }).toMap
+  }
+
+  private def tweakID(id: String): String = {
+    val doid = "(DO:DOID:)(.+)".r
+    id match {
+      case doid(prefix, local) => s"DOID:$local"
+      case _                   => id
+    }
   }
 
   private def processDate(text: String): Option[String] = {
