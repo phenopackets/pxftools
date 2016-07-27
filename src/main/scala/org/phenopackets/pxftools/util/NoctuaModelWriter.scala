@@ -31,7 +31,7 @@ import com.github.jsonldjava.core.Context
 import com.hp.hpl.jena.vocabulary.DC_11
 import com.typesafe.scalalogging.LazyLogging
 
-object NoctuaModelReader extends LazyLogging {
+object NoctuaModelWriter extends LazyLogging {
 
   private val factory = OWLManager.getOWLDataFactory
   private val DCTitle = AnnotationProperty(DC_11.title.getURI)
