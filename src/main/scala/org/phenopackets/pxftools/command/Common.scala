@@ -20,7 +20,7 @@ import org.phenopackets.api.io.RdfGenerator
 import org.phenopackets.api.io.YamlGenerator
 import org.phenopackets.api.io.YamlReader
 import org.phenopackets.pxftools.util.HPOAnnotations
-import org.phenopackets.pxftools.util.NoctuaModel
+import org.phenopackets.pxftools.util.NoctuaModelReader
 
 trait Common extends Command {
 
@@ -46,7 +46,7 @@ trait Common extends Command {
     case "yaml"   => YamlGenerator.render
     case "json"   => JsonGenerator.render
     case "turtle" => RdfGenerator.render(_, null, Lang.TURTLE) //TODO should we ask for a base?
-    case "noctua" => NoctuaModel.render
+    case "noctua" => NoctuaModelReader.render
     case _        => throw new ParsingException("Invalid output format.")
   }
 
