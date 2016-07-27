@@ -116,7 +116,8 @@ object HPOAnnotations extends LazyLogging {
   private val HPOContext: Context = new Context().parse(Map[String, Object](
     "obo" -> "http://purl.obolibrary.org/obo/",
     "HP" -> "obo:HP_",
-    "OMIM" -> "obo:OMIM_").asJava)
+    "OMIM" -> "obo:OMIM_",
+    "MIM" -> "obo:OMIM_").asJava)
 
   //FIXME add in appropriate IRIs once these are available
   private val knownEvidenceCodes: Map[String, Resource] = Map(

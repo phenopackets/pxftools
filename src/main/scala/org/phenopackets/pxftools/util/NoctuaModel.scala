@@ -14,6 +14,7 @@ import org.phenopackets.api.model.condition.TemporalRegion
 import org.phenopackets.api.model.entity.Disease
 import org.phenopackets.api.model.environment.Environment
 import org.phenopackets.api.model.evidence.Evidence
+import org.phenopackets.api.model.evidence.Publication
 import org.phenopackets.api.model.ontology.ClassInstance
 import org.phenopackets.api.util.ContextUtil
 import org.phenoscape.scowl._
@@ -47,7 +48,7 @@ object NoctuaModel extends LazyLogging {
   private val TemporalRegionToEnd = DataProperty("http://example.org/temporal_region_end_at") //FIXME
   private val ExistenceStartsDuring = ObjectProperty("http://purl.obolibrary.org/obo/RO_0002488")
   private val ExistenceEndsDuring = ObjectProperty("http://purl.obolibrary.org/obo/RO_0002492")
-  private val AxiomHasEvidence = AnnotationProperty("http://geneontology.org/lego/evidence")
+  private val AxiomHasEvidence = AnnotationProperty("http://purl.obolibrary.org/obo/RO_0002612")
   private val HasSupportingReference = ObjectProperty("http://purl.obolibrary.org/obo/SEPIO_0000124")
   private val Publication = Class("http://purl.obolibrary.org/obo/IAO_0000311")
 
@@ -200,12 +201,22 @@ object NoctuaModel extends LazyLogging {
     axioms += Declaration(evidenceIndividual)
     evidence.getSupportingEntities.asScala.map(_ => ???) //TODO
     for {
-      pub <- evidence.getSupportingPublications.asScala
+      (pubIndividual, pubAxioms) <- evidence.getSupportingPublications.asScala.map(translatePublication(_, context))
     } {
-      axioms += evidenceIndividual Annotation (DCSource, pub.getId)
+      axioms += evidenceIndividual Fact (HasSupportingReference, pubIndividual)
+      axioms ++= pubAxioms
     }
     axioms ++= translateClassInstance(evidence, evidenceIndividual, context)
     (evidenceIndividual, axioms)
+  }
+
+  def translatePublication(publication: Publication, context: Context): (OWLNamedIndividual, Set[OWLAxiom]) = {
+    var axioms = Set.empty[OWLAxiom]
+    val pubIndividual = Individual(iri(publication.getId, context))
+    axioms += Declaration(pubIndividual)
+    axioms += pubIndividual Type Publication
+    axioms ++= Option(publication.getTitle).map(pubIndividual Annotation (DCTitle, _))
+    (pubIndividual, axioms)
   }
 
   def translateClassInstance(instance: ClassInstance, individual: OWLNamedIndividual, context: Context): Set[OWLAxiom] = {
