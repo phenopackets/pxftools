@@ -6,10 +6,14 @@ import scala.collection.JavaConverters._
 
 import org.phenopackets.api.PhenoPacket
 import org.phenopackets.api.model.association.PhenotypeAssociation
+import org.phenopackets.api.model.condition.ConditionFrequency
+import org.phenopackets.api.model.condition.ConditionSeverity
 import org.phenopackets.api.model.condition.Phenotype
+import org.phenopackets.api.model.condition.TemporalRegion
 import org.phenopackets.api.model.entity.Disease
 import org.phenopackets.api.model.evidence.Evidence
 import org.phenopackets.api.model.evidence.Publication
+import org.phenopackets.api.model.ontology.ClassInstance
 import org.phenopackets.api.model.ontology.OntologyClass
 import org.phenopackets.pxftools.util.NoctuaModelVocabulary._
 import org.phenoscape.scowl._
@@ -26,10 +30,6 @@ import com.typesafe.scalalogging.LazyLogging
 
 import scalaz._
 import scalaz.Scalaz._
-import org.phenopackets.api.model.condition.ConditionFrequency
-import org.phenopackets.api.model.ontology.ClassInstance
-import org.phenopackets.api.model.condition.ConditionSeverity
-import org.phenopackets.api.model.condition.TemporalRegion
 
 object NoctuaDiseasePhenotypeModelReader extends LazyLogging {
 
