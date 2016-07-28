@@ -102,37 +102,43 @@ object NoctuaDiseasePhenotypeModelReader extends LazyLogging {
     classBuilder.build()
   }
 
-  private def findLabel(item: OWLEntity, ont: OWLOntology): Option[String] = (for {
-    AnnotationAssertion(_, RDFSLabel, _, label ^^ _) <- ont.getAnnotationAssertionAxioms(item.getIRI).asScala
-  } yield label).headOption
+  private def findLabel(item: OWLEntity, ont: OWLOntology): Option[String] =
+    ont.getAnnotationAssertionAxioms(item.getIRI).asScala.collectFirst {
+      case AnnotationAssertion(_, RDFSLabel, _, label ^^ _) => label
+    }
 
-  private def findDescription(item: OWLEntity, ont: OWLOntology): Option[String] = (for {
-    AnnotationAssertion(_, DCDescription, _, desc ^^ _) <- ont.getAnnotationAssertionAxioms(item.getIRI).asScala
-  } yield desc).headOption
+  private def findDescription(item: OWLEntity, ont: OWLOntology): Option[String] =
+    ont.getAnnotationAssertionAxioms(item.getIRI).asScala.collectFirst {
+      case AnnotationAssertion(_, DCDescription, _, desc ^^ _) => desc
+    }
 
-  private def findFrequency(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[ConditionFrequency] = (for {
-    ObjectPropertyAssertion(_, ConditionToFrequency, _, frequencyInd: OWLNamedIndividual) <- ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala
-  } yield {
-    val frequency = new ConditionFrequency()
-    updateAsClassInstance(frequency, frequencyInd, ont)
-    frequency
-  }).headOption
+  private def findFrequency(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[ConditionFrequency] =
+    ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala.collectFirst {
+      case ObjectPropertyAssertion(_, ConditionToFrequency, _, frequencyInd: OWLNamedIndividual) => {
+        val frequency = new ConditionFrequency()
+        updateAsClassInstance(frequency, frequencyInd, ont)
+        frequency
+      }
+    }
 
-  private def findSeverity(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[ConditionSeverity] = (for {
-    ObjectPropertyAssertion(_, ConditionToSeverity, _, severityInd: OWLNamedIndividual) <- ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala
-  } yield {
-    val severity = new ConditionSeverity()
-    updateAsClassInstance(severity, severityInd, ont)
-    severity
-  }).headOption
+  private def findSeverity(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[ConditionSeverity] =
+    ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala.collectFirst {
+      case ObjectPropertyAssertion(_, ConditionToSeverity, _, severityInd: OWLNamedIndividual) => {
+        val severity = new ConditionSeverity()
+        updateAsClassInstance(severity, severityInd, ont)
+        severity
+      }
+    }
 
-  private def findTimeOfOnset(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[TemporalRegion] = (for {
-    ObjectPropertyAssertion(_, ExistenceStartsDuring, _, onsetInd: OWLNamedIndividual) <- ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala
-  } yield toTemporalRegion(onsetInd, ont)).headOption
+  private def findTimeOfOnset(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[TemporalRegion] =
+    ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala.collectFirst {
+      case ObjectPropertyAssertion(_, ExistenceStartsDuring, _, onsetInd: OWLNamedIndividual) => toTemporalRegion(onsetInd, ont)
+    }
 
-  private def findTimeOfOffset(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[TemporalRegion] = (for {
-    ObjectPropertyAssertion(_, ExistenceEndsDuring, _, offsetInd: OWLNamedIndividual) <- ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala
-  } yield toTemporalRegion(offsetInd, ont)).headOption
+  private def findTimeOfOffset(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[TemporalRegion] =
+    ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala.collectFirst {
+      case ObjectPropertyAssertion(_, ExistenceEndsDuring, _, offsetInd: OWLNamedIndividual) => toTemporalRegion(offsetInd, ont)
+    }
 
   private def toTemporalRegion(regionInd: OWLNamedIndividual, ont: OWLOntology): TemporalRegion = {
     val region = new TemporalRegion()
