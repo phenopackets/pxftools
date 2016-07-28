@@ -128,29 +128,21 @@ object NoctuaDiseasePhenotypeModelReader extends LazyLogging {
 
   private def findTimeOfOnset(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[TemporalRegion] = (for {
     ObjectPropertyAssertion(_, ExistenceStartsDuring, _, onsetInd: OWLNamedIndividual) <- ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala
-  } yield {
-    toTemporalRegion(onsetInd, ont)
-  }).headOption
+  } yield toTemporalRegion(onsetInd, ont)).headOption
 
   private def findTimeOfOffset(phenotypeInd: OWLNamedIndividual, ont: OWLOntology): Option[TemporalRegion] = (for {
     ObjectPropertyAssertion(_, ExistenceEndsDuring, _, offsetInd: OWLNamedIndividual) <- ont.getObjectPropertyAssertionAxioms(phenotypeInd).asScala
-  } yield {
-    toTemporalRegion(offsetInd, ont)
-  }).headOption
+  } yield toTemporalRegion(offsetInd, ont)).headOption
 
   private def toTemporalRegion(regionInd: OWLNamedIndividual, ont: OWLOntology): TemporalRegion = {
     val region = new TemporalRegion()
     updateAsClassInstance(region, regionInd, ont)
     for {
       ObjectPropertyAssertion(_, TemporalRegionToStart, _, start ^^ _) <- ont.getObjectPropertyAssertionAxioms(regionInd).asScala
-    } {
-      region.setStartTime(start)
-    }
+    } region.setStartTime(start)
     for {
       ObjectPropertyAssertion(_, TemporalRegionToEnd, _, end ^^ _) <- ont.getObjectPropertyAssertionAxioms(regionInd).asScala
-    } {
-      region.setEndTime(end)
-    }
+    } region.setEndTime(end)
     region
   }
 
