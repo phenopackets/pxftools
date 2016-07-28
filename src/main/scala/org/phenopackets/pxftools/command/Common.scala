@@ -21,6 +21,7 @@ import org.phenopackets.api.io.YamlGenerator
 import org.phenopackets.api.io.YamlReader
 import org.phenopackets.pxftools.util.HPOAnnotations
 import org.phenopackets.pxftools.util.NoctuaModelWriter
+import org.phenopackets.pxftools.util.NoctuaDiseasePhenotypeModelReader
 
 trait Common extends Command {
 
@@ -31,15 +32,21 @@ trait Common extends Command {
 
   var out = opt[String](description = "Output file. Omit to write to standard out.", default = "")
 
-  var informat = opt[String](description = "Input format. By default both yaml and json will be attempted. Set the input format to one of:\nyaml\njson\nhpo-phenote", default = "guess")
+  var informat = opt[String](description =
+    """Input format. By default both yaml and json will be attempted. Set the input format to one of:
+yaml
+json
+hpo-phenote
+noctua-disease-phenotype""", default = "guess")
   var outformat = opt[String](description = "Output format. Set the output format to one of:\nyaml\njson\nturtle\nnoctua", default = "yaml")
 
   def inputReader: Option[PhenoPacketReader] = informat match {
-    case "yaml"        => Option(YamlReader.readInputStream)
-    case "json"        => Option(JsonReader.readInputStream)
-    case "hpo-phenote" => Option(HPOAnnotations.read)
-    case "guess"       => None
-    case _             => throw new ParsingException("Invalid input format.")
+    case "yaml"                     => Option(YamlReader.readInputStream)
+    case "json"                     => Option(JsonReader.readInputStream)
+    case "hpo-phenote"              => Option(HPOAnnotations.read)
+    case "noctua-disease-phenotype" => Option(NoctuaDiseasePhenotypeModelReader.read)
+    case "guess"                    => None
+    case _                          => throw new ParsingException("Invalid input format.")
   }
 
   def outputWriter: PhenoPacketWriter = outformat match {
