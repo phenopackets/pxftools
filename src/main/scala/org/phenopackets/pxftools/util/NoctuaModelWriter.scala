@@ -17,6 +17,7 @@ import org.phenopackets.api.model.evidence.Evidence
 import org.phenopackets.api.model.evidence.Publication
 import org.phenopackets.api.model.ontology.ClassInstance
 import org.phenopackets.api.util.ContextUtil
+import org.phenopackets.pxftools.util.NoctuaModelVocabulary._
 import org.phenoscape.scowl._
 import org.semanticweb.owlapi.apibinding.OWLManager
 import org.semanticweb.owlapi.formats.ManchesterSyntaxDocumentFormat
@@ -28,29 +29,9 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual
 import org.semanticweb.owlapi.model.OWLOntology
 
 import com.github.jsonldjava.core.Context
-import com.hp.hpl.jena.vocabulary.DC_11
 import com.typesafe.scalalogging.LazyLogging
 
 object NoctuaModelWriter extends LazyLogging {
-
-  private val factory = OWLManager.getOWLDataFactory
-  private val DCTitle = AnnotationProperty(DC_11.title.getURI)
-  private val DCDescription = AnnotationProperty(DC_11.description.getURI)
-  private val DCSource = AnnotationProperty(DC_11.source.getURI)
-  private val DCDate = AnnotationProperty(DC_11.date.getURI)
-  private val DCContributor = AnnotationProperty(DC_11.contributor.getURI)
-  private val RDFSComment = factory.getRDFSComment
-  private val RDFSLabel = factory.getRDFSLabel
-  private val HasPart = ObjectProperty("http://purl.obolibrary.org/obo/BFO_0000051")
-  private val ConditionToFrequency = ObjectProperty("http://example.org/condition_to_frequency") //FIXME
-  private val ConditionToSeverity = ObjectProperty("http://example.org/condition_to_severity") //FIXME
-  private val TemporalRegionToStart = DataProperty("http://example.org/temporal_region_start_at") //FIXME
-  private val TemporalRegionToEnd = DataProperty("http://example.org/temporal_region_end_at") //FIXME
-  private val ExistenceStartsDuring = ObjectProperty("http://purl.obolibrary.org/obo/RO_0002488")
-  private val ExistenceEndsDuring = ObjectProperty("http://purl.obolibrary.org/obo/RO_0002492")
-  private val AxiomHasEvidence = AnnotationProperty("http://purl.obolibrary.org/obo/RO_0002612")
-  private val HasSupportingReference = ObjectProperty("http://purl.obolibrary.org/obo/SEPIO_0000124")
-  private val Publication = Class("http://purl.obolibrary.org/obo/IAO_0000311")
 
   def fromPhenoPacket(packet: PhenoPacket): OWLOntology = {
     val manager = OWLManager.createOWLOntologyManager()
@@ -214,7 +195,7 @@ object NoctuaModelWriter extends LazyLogging {
     var axioms = Set.empty[OWLAxiom]
     val pubIndividual = Individual(iri(publication.getId, context))
     axioms += Declaration(pubIndividual)
-    axioms += pubIndividual Type Publication
+    axioms += pubIndividual Type org.phenopackets.pxftools.util.NoctuaModelVocabulary.Publication
     axioms ++= Option(publication.getTitle).map(pubIndividual Annotation (DCTitle, _))
     (pubIndividual, axioms)
   }
@@ -244,7 +225,7 @@ object NoctuaModelWriter extends LazyLogging {
   private def iri(id: String, context: Context): IRI = {
     val expanded = ContextUtil.expandIdentifierAsValue(id, context)
     val expandedID = if (expanded.contains(":")) {
-      if (!expanded.startsWith("http")) logger.warn(s"No HTTP URI found for identifer: $id")
+      if (!expanded.startsWith("http")) logger.warn(s"No HTTP URI found for identifier: $id")
       expanded
     } else {
       logger.warn(s"No URI found for identifer: $id")
