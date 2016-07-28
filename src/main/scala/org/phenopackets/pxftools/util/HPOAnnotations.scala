@@ -118,7 +118,8 @@ object HPOAnnotations extends LazyLogging {
     "HP" -> "obo:HP_",
     "OMIM" -> "obo:OMIM_",
     "MIM" -> "obo:OMIM_",
-    "DOID" -> "obo:DOID_").asJava)
+    "DOID" -> "obo:DOID_",
+    "DECIPHER" -> "obo:DECIPHER_").asJava)
 
   //FIXME add in appropriate IRIs once these are available
   private val knownEvidenceCodes: Map[String, Resource] = Map(
