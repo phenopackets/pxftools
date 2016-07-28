@@ -152,7 +152,6 @@ object NoctuaDiseasePhenotypeModelReader extends LazyLogging {
       region.setEndTime(end)
     }
     region
-
   }
 
   private def updateAsClassInstance(instance: ClassInstance, ind: OWLNamedIndividual, ont: OWLOntology): Unit = {
