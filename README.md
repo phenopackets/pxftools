@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.org/phenopackets/pxftools.svg?branch=master)](https://travis-ci.org/phenopackets/pxftools)
 
+## CAUTION! THIS REPO HAS BEED RETIRED!
+
+This initial implementation has now been archived - please refer to the [phenopacket-schema](https://github.com/phenopackets/phenopacket-schema) repository for the current implementation.
+
 # PXFtools command line utility
 
 This project provides a command line utility for operating over Phenotype eXchange Format (PXF) files.
